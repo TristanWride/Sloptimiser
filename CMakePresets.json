@@ -6,15 +6,25 @@
             "name": "linux-base",
             "displayName": "linux-base",
             "description": "Base configuration for linux builds",
-            "generator": "Ninja",
+            "generator": "Ninja Multi-Config",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
             },
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;Asan",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
+                "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/bin",
+                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_RELEASE": "-O2 -Wall -Werror -pedantic",
+                "CMAKE_CXX_FLAGS_DEBUG": "-Og -ggdb -DNDEBUG -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_DEBUG": "-Og -ggdb -DNDEBUG -Wall -Werror -pedantic",
+                "CMAKE_CXX_FLAGS_ASAN": "-O0 -fsanitize=address,undefined -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_ASAN": "-O0 -fsanitize=address,undefined -Wall -Werror -pedantic",
+                "CMAKE_EXE_LINKER_FLAGS_ASAN": "-fsanitize=address,undefined"
             }
         },
         {
@@ -38,66 +48,14 @@
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++"
             }
-        },
-        {
-            "name": "windows-base",
-            "description": "Using compilers for Visual Studio 17 2022 (x86_x64 architecture)",
-            "generator": "Visual Studio 17 2022",
-            "toolset": "host=x86",
-            "architecture": "x64",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "installDir": "${sourceDir}/out/install/${presetName}",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-            }
         }
     ],
     "buildPresets": [
-        {
-            "name": "linux-gcc-debug",
-            "configuration": "Debug",
-            "configurePreset": "linux-gcc"
-        },
-        {
-            "name": "linux-gcc-release",
-            "configuration": "Release",
-            "configurePreset": "linux-gcc"
-        },
-        {
-            "name": "linux-clang-debug",
-            "configuration": "Debug",
-            "configurePreset": "linux-clang"
-        },
-        {
-            "name": "linux-clang-release",
-            "configuration": "Release",
-            "configurePreset": "linux-clang"
-        },
-        {
-            "name": "windows-base-debug",
-            "configurePreset": "windows-base",
-            "configuration": "Debug"
-        },
-        {
-            "name": "windows-base-release",
-            "configurePreset": "windows-base",
-            "configuration": "Release"
-        }
+        { "name": "linux-gcc", "configurePreset": "linux-gcc" },
+        { "name": "linux-clang", "configurePreset": "linux-clang" }
     ],
     "testPresets": [
-        {
-            "name": "linux-gcc",
-            "configurePreset": "linux-gcc"
-        },
-        {
-            "name": "linux-clang",
-            "configurePreset": "linux-clang"
-        },
-        {
-            "name": "windows-base",
-            "configurePreset": "windows-base"
-        }
+        { "name": "linux-gcc", "configurePreset": "linux-gcc" },
+        { "name": "linux-clang", "configurePreset": "linux-clang" }
     ]
 }
