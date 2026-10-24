@@ -13,18 +13,21 @@
             },
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;Asan",
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;Asan;Msan",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
                 "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/bin",
-                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -Wall -Werror -pedantic",
-                "CMAKE_C_FLAGS_RELEASE": "-O2 -Wall -Werror -pedantic",
-                "CMAKE_CXX_FLAGS_DEBUG": "-Og -ggdb -DNDEBUG -Wall -Werror -pedantic",
-                "CMAKE_C_FLAGS_DEBUG": "-Og -ggdb -DNDEBUG -Wall -Werror -pedantic",
-                "CMAKE_CXX_FLAGS_ASAN": "-O0 -fsanitize=address,undefined -Wall -Werror -pedantic",
-                "CMAKE_C_FLAGS_ASAN": "-O0 -fsanitize=address,undefined -Wall -Werror -pedantic",
-                "CMAKE_EXE_LINKER_FLAGS_ASAN": "-fsanitize=address,undefined"
+                "CMAKE_CXX_FLAGS_RELEASE": "-O3 -DNDEBUG -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_RELEASE": "-O3 -DNDEBUG -Wall -Werror -pedantic",
+                "CMAKE_CXX_FLAGS_DEBUG": "-Og -ggdb -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_DEBUG": "-Og -ggdb -Wall -Werror -pedantic",
+                "CMAKE_CXX_FLAGS_ASAN": "-O0 -ggdb -fsanitize=address,undefined -Wall -Werror -pedantic",
+                "CMAKE_CXX_FLAGS_MSAN": "-O0 -ggdb -fsanitize=memory -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_ASAN": "-O0 -ggdb -fsanitize=address,undefined -Wall -Werror -pedantic",
+                "CMAKE_C_FLAGS_MSAN": "-O0 -ggdb -fsanitize=memory,undefined -Wall -Werror -pedantic",
+                "CMAKE_EXE_LINKER_FLAGS_ASAN": "-fsanitize=address,undefined",
+                "CMAKE_EXE_LINKER_FLAGS_MSAN": "-fsanitize=memory,undefined"
             }
         },
         {
@@ -48,14 +51,97 @@
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++"
             }
+        },
+        {
+            "name": "windows-msvc",
+            "displayName": "windows-msvc",
+            "description": "Base configuration for windows builds",
+            "generator": "Visual Studio 18 2026",
+            "toolset": "host=x86",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;Asan",
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
+                "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/lib",
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/out/build/${presetName}/$<CONFIG>/bin",
+                "CMAKE_CXX_FLAGS_RELEASE": "/O2 /DNDEBUG /Wall /EHsc",
+                "CMAKE_C_FLAGS_RELEASE": "/O2 /DNDEBUG /Wall /EHsc",
+                "CMAKE_CXX_FLAGS_DEBUG": "/Od /Wall /EHsc",
+                "CMAKE_C_FLAGS_DEBUG": "/Od /Wall /EHsc",
+                "CMAKE_CXX_FLAGS_ASAN": "/Od /fsanitize=address /Wall /EHsc",
+                "CMAKE_C_FLAGS_ASAN": "/Od /fsanitize=address /Wall /EHsc",
+                "CMAKE_EXE_LINKER_FLAGS_ASAN": "/fsanitize=address"
+            }
         }
     ],
     "buildPresets": [
-        { "name": "linux-gcc", "configurePreset": "linux-gcc" },
-        { "name": "linux-clang", "configurePreset": "linux-clang" }
+        {
+            "name": "linux-gcc",
+            "configurePreset": "linux-gcc"
+        },
+        {
+            "name": "linux-clang",
+            "configurePreset": "linux-clang"
+        },
+        {
+            "name": "windows-msvc",
+            "configurePreset": "windows-msvc"
+        },
+        {
+            "name": "windows-msvc-debug",
+            "inherits": [ "windows-msvc" ],
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-msvc-release",
+            "inherits": [
+                "windows-msvc"
+            ],
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-msvc-asan",
+            "inherits": [
+                "windows-msvc"
+            ],
+            "configuration": "Asan"
+        }
     ],
     "testPresets": [
-        { "name": "linux-gcc", "configurePreset": "linux-gcc" },
-        { "name": "linux-clang", "configurePreset": "linux-clang" }
+        {
+            "name": "linux-gcc",
+            "configurePreset": "linux-gcc"
+        },
+        {
+            "name": "linux-clang",
+            "configurePreset": "linux-clang"
+        },
+        {
+            "name": "windows-msvc",
+            "configurePreset": "windows-msvc"
+        },
+        {
+            "name": "windows-msvc-debug",
+            "inherits": [ "windows-msvc" ],
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-msvc-release",
+            "inherits": [
+                "windows-msvc"
+            ],
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-msvc-asan",
+            "inherits": [
+                "windows-msvc"
+            ],
+            "configuration": "Asan"
+        }
     ]
 }
