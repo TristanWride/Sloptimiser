@@ -112,7 +112,7 @@ constexpr void Tape<Floating>::Backward( const typename Tape<Floating>::VarType&
 
 #define DEFINE_BINOP( name_, arg1name_, arg2name_, valueexpr_, partial1_, partial2_ ) \
     template <class Floating> \
-    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const typename Variable<Tape<Floating>, Floating>& p_ ## arg1name_, const Variable<Tape<Floating>, Floating>& p_ ## arg2name_ ) { \
+    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const Variable<Tape<Floating>, Floating>& p_ ## arg1name_, const Variable<Tape<Floating>, Floating>& p_ ## arg2name_ ) { \
         const auto arg1name_ = p_ ## arg1name_.value_; \
         const auto arg2name_ = p_ ## arg2name_.value_; \
         const auto tape = p_ ## arg1name_.tape_; \
@@ -134,7 +134,7 @@ DEFINE_BINOP( pow, x, y, std::pow(x, y), y * std::pow( x, y - 1 ), std::log( x )
 #define DEFINE_BINOP_CRHS( name_, arg1name_, arg2name_, valueexpr_, partial_ ) \
     template <class Floating, class T> \
     requires std::convertible_to< const T&, Floating > \
-    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const typename Variable<Tape<Floating>, Floating>& p_ ## arg1name_, const T& p_ ## arg2name_ ) { \
+    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const Variable<Tape<Floating>, Floating>& p_ ## arg1name_, const T& p_ ## arg2name_ ) { \
         const auto arg1name_ = p_ ## arg1name_.value_; \
         const auto arg2name_ = static_cast<Floating>( p_ ## arg2name_ ); \
         const auto tape = p_ ## arg1name_.tape_; \
@@ -157,7 +157,7 @@ DEFINE_BINOP_CRHS( pow, x, y, std::pow(x, y), y * std::pow( x, y - 1 ) )
 #define DEFINE_BINOP_CLHS( name_, arg1name_, arg2name_, valueexpr_, partial_ ) \
     template <class Floating, class T> \
     requires std::convertible_to< const T&, Floating > \
-    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const T& p_ ## arg1name_, const typename Variable<Tape<Floating>, Floating>& p_ ## arg2name_ ) { \
+    [[nodiscard]] constexpr Variable<Tape<Floating>, Floating> name_( const T& p_ ## arg1name_, const Variable<Tape<Floating>, Floating>& p_ ## arg2name_ ) { \
         const auto arg2name_ = p_ ## arg2name_.value_; \
         const auto arg1name_ = static_cast<Floating>( p_ ## arg1name_ ); \
         const auto tape = p_ ## arg2name_.tape_; \
